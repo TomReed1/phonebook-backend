@@ -22,39 +22,33 @@ app.use(
 app.get('/api/persons', (request, response, next) => {
   Person.find({}).then(persons => {
     response.json(persons)
-  })
-  .catch(error => next(error))
+  }).catch(error => next(error))
 })
 
 app.get('/info', (req, res, next) => {
-  Person.countDocuments({})
-  .then(count => {
+  Person.countDocuments({}).then(count => {
     const requestTime = new Date()
-    personNumber = count
+    const personNumber = count
     res.send(`<p>The phonebook has ${personNumber} people</p>
     <p>${requestTime}</p>`)
-  })
-
-.catch(error => next(error))
+  }).catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
- Person.findById(req.params.id)
-     .then(person => {
-       if (person) {
-         res.json(person)
-       } else {
-         res.status(404).end()
-       }
-     })
-     .catch(error => next(error))
- })
+  Person.findById(req.params.id).then(person => {
+    if (person) {
+      res.json(person)
+    } else {
+      res.status(404).end()
+    }
+  })
+    .catch(error => next(error))
+})
 
 app.delete('/api/persons/:id', (req, res, next) => {
-Person.findByIdAndDelete(req.params.id)
- .then(result => {
-      res.status(204).end()
-    })
+  Person.findByIdAndDelete(req.params.id).then(res => {
+    res.status(204).end()
+  })
     .catch(error => next(error))
 })
 
@@ -68,26 +62,22 @@ app.post('/api/persons', (request, response, next) => {
 
   person.save().then(savedPerson => {
     response.json(savedPerson)
-  })
-  .catch(error => next(error))
+  }).catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
   const { name, number } = req.body
-  
-  Person.findById(req.params.id)
-  .then(person => {
+
+  Person.findById(req.params.id).then(person => {
     if (!person) {
-        return response.status(404).end()
-      }
+      return res.status(404).end()
+    }
     person.name = name
     person.number = number
 
-      return person.save().then((updatedPerson) => {
-        res.json(updatedPerson)
-  })
-  })
-  .catch(error => next(error))
+    return person.save().then((updatedPerson) => {
+      res.json(updatedPerson)})
+  }).catch(error => next(error))
 
 })
 
